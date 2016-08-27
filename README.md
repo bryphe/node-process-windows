@@ -10,6 +10,8 @@
 
 ## Installation
 
+Requires Node 4+
+
 ```
     npm install process-windows
 ```
