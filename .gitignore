@@ -35,3 +35,11 @@ jspm_packages
 
 # Optional REPL history
 .node_repl_history
+
+# C# bin folder
+bin/
+
+# C# obj folder
+obj/
+
+.vs/
