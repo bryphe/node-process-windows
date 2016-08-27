@@ -1,4 +1,4 @@
-# node-process-windows
+# node-node-process-windows
 ###### Manage application windows via a Node API - set focus, cycle active windows, and get active windows
 
 - [Installation](#Installation)
@@ -13,7 +13,7 @@
 Requires Node 4+
 
 ```
-    npm install process-windows
+    npm install node-process-windows
 ```
 
 ### Supported Platforms
@@ -27,7 +27,7 @@ Pull requests are welcome - it would be great to have this API work cross-platfo
 1) Get active processes
 
 ```javascript
-    var processWindows = require("process-windows");
+    var processWindows = require("node-process-windows");
 
     var activeProcesses = processWindows.getActiveProcesses(function(err, processes) {
         processes.forEach(function (p) {
@@ -41,7 +41,7 @@ Pull requests are welcome - it would be great to have this API work cross-platfo
 2) Focus a window
 
 ```javascript
-    var processWindows = require("process-windows");
+    var processWindows = require("node-process-windows");
 
     // Focus window by process...
     var activeProcesses = processWindows.getActiveProcesses(function(err, processes) {
@@ -60,7 +60,7 @@ Pull requests are welcome - it would be great to have this API work cross-platfo
 3) Cycle windows for process
 
 ```javascript
-    var processWindows = require("process-windows");
+    var processWindows = require("node-process-windows");
 
     processWindows.focusNextWindow("chrome");
 
