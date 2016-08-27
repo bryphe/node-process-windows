@@ -1,0 +1,33 @@
+{
+  "name": "node-process-windows",
+  "version": "0.0.1",
+  "description": "View processes, activate a process's window, or cycle application windows",
+  "main": "index.js",
+  "dependencies": {},
+  "devDependencies": {},
+  "scripts": {
+    "test": "npm run test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/extr0py/node-process-windows.git"
+  },
+  "keywords": [
+    "window",
+    "shell",
+    "application",
+    "handle",
+    "mainwindowhandle",
+    "focus",
+    "activate",
+    "cycle",
+    "net",
+    "c#"
+  ],
+  "author": "extr0py",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/extr0py/node-process-windows/issues"
+  },
+  "homepage": "https://github.com/extr0py/node-process-windows#readme"
+}
