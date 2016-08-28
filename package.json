@@ -1,7 +1,7 @@
 {
   "name": "node-process-windows",
-  "version": "0.0.1",
-  "description": "View processes, activate a process's window, or cycle application windows",
+  "version": "0.0.2",
+  "description": "View information about running processes, get the active process window, or activate a process's main window.",
   "main": "index.js",
   "dependencies": {},
   "devDependencies": {},

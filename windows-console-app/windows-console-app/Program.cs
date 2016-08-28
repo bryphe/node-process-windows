@@ -30,7 +30,7 @@ namespace windows_console_app
         {
 
             if (args.Length < 1)
-                throw new ArgumentException("Please specify an argument: --processInfo, --focus <pid>");
+                throw new ArgumentException("Please specify an argument: --processInfo, --focus <pid>, --activewindow");
 
             var argument = args[0].ToLowerInvariant();
 
@@ -38,9 +38,11 @@ namespace windows_console_app
 
             try
             {
-
                 switch (argument)
                 {
+                    case "--activewindow":
+                        output.Result = GetActiveProcessInfo();
+                        break;
                     case "--processinfo":
                         output.Result = GetProcessInfo();
                         break;
@@ -67,7 +69,26 @@ namespace windows_console_app
         private static ProcessInfo[] GetProcessInfo()
         {
             var processes = Process.GetProcesses();
+            return ConvertToProcessInfo(processes);
+        }
 
+        private static ProcessInfo GetActiveProcessInfo()
+        {
+            var processes = Process.GetProcesses();
+            var activeForegroundWindow = NativeMethods.GetForegroundWindow();
+
+            var activeWindows = processes.Where(p => p.MainWindowHandle == activeForegroundWindow);
+
+            if (activeWindows.Count() < 1)
+            {
+                return null;
+            }
+            else
+                return ConvertToProcessInfo(activeWindows)[0];
+        }
+
+        private static ProcessInfo[] ConvertToProcessInfo(IEnumerable<Process> processes)
+        {
             return processes
                     .Select(process => new ProcessInfo() { MainWindowTitle = process.MainWindowTitle, ProcessId = process.Id, ProcessName = process.ProcessName })
                     .ToArray();

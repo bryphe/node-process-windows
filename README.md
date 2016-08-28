@@ -29,7 +29,7 @@ Pull requests are welcome - it would be great to have this API work cross-platfo
 ```javascript
     var processWindows = require("node-process-windows");
 
-    var activeProcesses = processWindows.getActiveProcesses(function(err, processes) {
+    var activeProcesses = processWindows.getProcesses(function(err, processes) {
         processes.forEach(function (p) {
             console.log("PID: " + p.pid.toString());
             console.log("MainWindowTitle: " + p.mainWindowTitle);
@@ -44,7 +44,7 @@ Pull requests are welcome - it would be great to have this API work cross-platfo
     var processWindows = require("node-process-windows");
 
     // Focus window by process...
-    var activeProcesses = processWindows.getActiveProcesses(function(err, processes) {
+    var activeProcesses = processWindows.getProcesses(function(err, processes) {
         var chromeProcesses = processes.filter(p => p.processName.indexOf("chrome") >= 0);
 
         // If there is a chrome process active, focus the first window
@@ -57,15 +57,14 @@ Pull requests are welcome - it would be great to have this API work cross-platfo
     processWindows.focusWindow("chrome");
 ```
 
-3) Cycle windows for process
+3) Get active window
 
 ```javascript
     var processWindows = require("node-process-windows");
 
-    processWindows.focusNextWindow("chrome");
-
-    // Focus previous window
-    processWindows.focusPreviousWindow("chrome");
+    var currentActiveWindow = processWindows.getActiveWindow((err, processInfo) => {
+        console.log("Active window title: " + processInfo.mainWindowTitle);
+    });
 ```
 
 ## Contributing
@@ -79,5 +78,3 @@ Pull requests are welcome
 ## Contact
 
 extr0py@extropygames.com
-
-
