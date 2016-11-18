@@ -16,6 +16,8 @@ Requires Node 4+
     npm install node-process-windows
 ```
 
+This module is __not supported__ in browsers.
+
 ### Supported Platforms
 
 Currently, this module is only supported on Windows, and uses a .NET console app to manage windows.
