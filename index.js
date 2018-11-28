@@ -16,24 +16,20 @@ function windowsCheck () {
 function getProcesses (callback) {
   windowsCheck()
 
-  var mappingFunction = (processes) => {
+  executeProcess('--processinfo', callback, (processes) => {
     return processes.map(p => {
       return {
         pid: p.ProcessId,
-        mainWindowTitle: p.MainWindowTitle || '',
-        processName: p.ProcessName || ''
+        mainWindowTitle: p.MainWindowTitle || null,
+        processName: p.ProcessName || null
       }
     })
-  }
-
-  executeProcess('--processinfo', callback, mappingFunction)
+  })
 }
 
 // Focus window by id, string name or object
 function focusWindow (process) {
   windowsCheck()
-
-  if (process === null) { return }
 
   if (typeof process === 'number') {
     executeProcess('--focus ' + process.toString())
@@ -41,21 +37,18 @@ function focusWindow (process) {
     focusWindowByName(process)
   } else if (process.pid) {
     executeProcess('--focus ' + process.pid.toString())
+  } else {
+    throw new Error('Invalid process identifier for focusWindow')
   }
 }
 
-/**
- * Get information about the currently active window
- *
- * @param {function} callback
- */
+// Get process object for active window
 function getActiveWindow (callback) {
   windowsCheck()
+  executeProcess('--activewindow', callback)
 }
 
-/**
- * Helper method to focus a window by name
- */
+// Helper method to focus a window by name
 function focusWindowByName (processName) {
   processName = processName.toLowerCase()
 
@@ -78,9 +71,7 @@ function focusWindowByName (processName) {
   })
 }
 
-/**
- * Helper method to execute the C# process that wraps the native focus / window APIs
- */
+// Helper method to execute the C# process that wraps the native focus / window APIs
 function executeProcess (arg, callback, mapper) {
   callback = callback || FUNC_NOOP
 
