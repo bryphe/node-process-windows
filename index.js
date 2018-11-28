@@ -1,58 +1,47 @@
-var exec = require("child_process").exec;
-var path = require("path");
+var exec = require('child_process').exec
+var path = require('path')
 
-var windowsFocusManagementBinary = path.join(__dirname, "windows-console-app", "windows-console-app", "bin", "Release", "windows-console-app.exe");
+var windowsFocusManagementBinary = path.join(__dirname, 'windows-console-app', 'windows-console-app', 'bin', 'Release', 'windows-console-app.exe')
 
-var isWindows = process.platform === "win32";
-var noop = function () { };
+const IS_WINDOWS = (process.platform === 'win32')
+const FUNC_NOOP = function () { }
+const ERROR_NOT_WINDOWS = new Error('Non-Windows platforms are currently not supported')
 
-/**
- * Get list of processes that are currently running
- *
- * @param {function} callback
- */
-function getProcesses(callback) {
-    callback = callback || noop;
-
-    if (!isWindows) {
-        callback("Non-Windows platforms are currently not supported");
-    }
-
-    var mappingFunction = (processes) => {
-        return processes.map(p => {
-            return {
-                pid: p.ProcessId,
-                mainWindowTitle: p.MainWindowTitle || "",
-                processName: p.ProcessName || ""
-            };
-        });
-    };
-
-    executeProcess("--processinfo", callback, mappingFunction);
+// Throw if not windows
+function windowsCheck () {
+  if (!IS_WINDOWS) throw ERROR_NOT_WINDOWS
 }
 
-/**
- * Focus a windows
- * Process can be a number (PID), name (process name or window title),
- * or a process object returning from getProcesses
- *
- * @param {number|string|ProcessInfo} process
- */
-function focusWindow(process) {
-    if (!isWindows) {
-        throw "Non-windows platforms are currently not supported"
-    }
+// Get list of running processes
+function getProcesses (callback) {
+  windowsCheck()
 
-    if (process === null)
-        return;
+  var mappingFunction = (processes) => {
+    return processes.map(p => {
+      return {
+        pid: p.ProcessId,
+        mainWindowTitle: p.MainWindowTitle || '',
+        processName: p.ProcessName || ''
+      }
+    })
+  }
 
-    if (typeof process === "number") {
-        executeProcess("--focus " + process.toString());
-    } else if (typeof process === "string") {
-        focusWindowByName(process);
-    } else if (process.pid) {
-        executeProcess("--focus " + process.pid.toString());
-    }
+  executeProcess('--processinfo', callback, mappingFunction)
+}
+
+// Focus window by id, string name or object
+function focusWindow (process) {
+  windowsCheck()
+
+  if (process === null) { return }
+
+  if (typeof process === 'number') {
+    executeProcess('--focus ' + process.toString())
+  } else if (typeof process === 'string') {
+    focusWindowByName(process)
+  } else if (process.pid) {
+    executeProcess('--focus ' + process.pid.toString())
+  }
 }
 
 /**
@@ -60,68 +49,68 @@ function focusWindow(process) {
  *
  * @param {function} callback
  */
-function getActiveWindow(callback) {
-    callback = callback || noop;
-
-    if (!isWindows) {
-        callback("Non-windows platforms are currently not supported");
-    }
+function getActiveWindow (callback) {
+  windowsCheck()
 }
 
 /**
  * Helper method to focus a window by name
  */
-function focusWindowByName(processName) {
-    processName = processName.toLowerCase();
+function focusWindowByName (processName) {
+  processName = processName.toLowerCase()
 
-    getProcesses((err, result) => {
-        var potentialResults = result.filter((p) => {
-            var normalizedProcessName = p.processName.toLowerCase();
-            var normalizedWindowName = p.mainWindowTitle.toLowerCase();
+  getProcesses((err, result) => {
+    if (err) {
+      throw new Error('Failed to get processes')
+    }
 
-            return normalizedProcessName.indexOf(processName) >= 0
-                || normalizedWindowName.indexOf(processName) >= 0;
-        });
+    var potentialResults = result.filter((p) => {
+      var normalizedProcessName = p.processName.toLowerCase()
+      var normalizedWindowName = p.mainWindowTitle.toLowerCase()
 
-        if (potentialResults.length > 0) {
-            executeProcess("--focus " + potentialResults[0].pid.toString());
-        }
-    });
+      return normalizedProcessName.indexOf(processName) >= 0 ||
+                normalizedWindowName.indexOf(processName) >= 0
+    })
+
+    if (potentialResults.length > 0) {
+      executeProcess('--focus ' + potentialResults[0].pid.toString())
+    }
+  })
 }
 
 /**
  * Helper method to execute the C# process that wraps the native focus / window APIs
  */
-function executeProcess(arg, callback, mapper) {
-    callback = callback || noop;
+function executeProcess (arg, callback, mapper) {
+  callback = callback || FUNC_NOOP
 
-    exec(windowsFocusManagementBinary + " " + arg, (error, stdout, stderr) => {
-        if (error) {
-            callback(error, null);
-            return;
-        }
+  exec(windowsFocusManagementBinary + ' ' + arg, (error, stdout, stderr) => {
+    if (error) {
+      callback(error, null)
+      return
+    }
 
-        if (stderr) {
-            callback(stderr, null);
-            return;
-        }
+    if (stderr) {
+      callback(stderr, null)
+      return
+    }
 
-        var returnObject = JSON.parse(stdout);
+    var returnObject = JSON.parse(stdout)
 
-        if (returnObject.Error) {
-            callback(returnObject.Error, null);
-            return;
-        }
+    if (returnObject.Error) {
+      callback(returnObject.Error, null)
+      return
+    }
 
-        var ret = returnObject.Result;
+    var ret = returnObject.Result
 
-        ret = mapper ? mapper(ret) : ret;
-        callback(null, ret);
-    });
+    ret = mapper ? mapper(ret) : ret
+    callback(null, ret)
+  })
 }
 
 module.exports = {
-    getProcesses: getProcesses,
-    focusWindow: focusWindow,
-    getActiveWindow: getActiveWindow
+  getProcesses: getProcesses,
+  focusWindow: focusWindow,
+  getActiveWindow: getActiveWindow
 }
