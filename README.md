@@ -1,6 +1,8 @@
 # node-node-process-windows
 ###### Manage application windows via a Node API - set focus, cycle active windows, and get active windows
 
+[![JavaScript Style Guide](https://cdn.rawgit.com/standard/standard/master/badge.svg)](https://github.com/standard/standard)
+
 - [Installation](#Installation)
     - [Supported Platforms](#Supported_Platforms)
 - [Usage](#Usage)
