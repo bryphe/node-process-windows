@@ -61,9 +61,9 @@ function getActiveWindow (callback) {
 
       // TODO: Support processId and processName
       var returnObject = {
-        'processName': 'macOS',
-        'windowTitle': stdout,
-        'processId': 0
+        'ProcessName': 'macOS',
+        'MainWindowTitle': stdout,
+        'ProcessId': 0
       }
 
       callback(null, returnObject)
