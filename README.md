@@ -1,5 +1,5 @@
 # node-node-process-windows
-###### Manage application windows via a Node API - set focus, cycle active windows, and get active windows
+###### Manage application windows via a Node API - set focus, cycle active windows and get active windows
 
 [![JavaScript Style Guide](https://cdn.rawgit.com/standard/standard/master/badge.svg)](https://github.com/standard/standard)
 
@@ -22,9 +22,9 @@ This module is __not supported__ in browsers.
 
 ### Supported Platforms
 
-Currently, this module is only supported on Windows, and uses a .NET console app to manage windows.
+Currently, this module is supported on Windows, and has partial support (only active window) for macOS. It uses a .NET console app on Windows, and AppleScript on macOS.
 
-Pull requests are welcome - it would be great to have this API work cross-platform.
+Pull requests are welcome - it would be great to have more of this API work cross-platform.
 
 ## Usage
 
@@ -81,4 +81,4 @@ Pull requests are welcome
 
 ## Contact
 
-extr0py@extropygames.com
+Original author - extr0py@extropygames.com
