@@ -2,8 +2,10 @@ var exec = require('child_process').exec
 var path = require('path')
 
 var windowsFocusManagementBinary = path.join(__dirname, 'windows-console-app', 'windows-console-app', 'bin', 'Release', 'windows-console-app.exe')
+var activeWindowAppleScript = path.join(__dirname, 'cross-platform', 'macOSactivewindow.scpt')
 
 const IS_WINDOWS = (process.platform === 'win32')
+const IS_MACOS = (process.platform === 'darwin')
 const FUNC_NOOP = function () { }
 const ERROR_NOT_WINDOWS = new Error('Non-Windows platforms are currently not supported')
 
@@ -44,8 +46,31 @@ function focusWindow (process) {
 
 // Get process object for active window
 function getActiveWindow (callback) {
-  windowsCheck()
-  executeProcess('--activewindow', callback)
+  if (IS_WINDOWS) {
+    executeProcess('--activewindow', callback)
+  } else if (IS_MACOS) {
+    exec(`osascript "${activeWindowAppleScript}"`, (error, stdout, stderr) => {
+      if (error) {
+        callback(error, null)
+        return
+      }
+      if (stderr) {
+        callback(stderr, null)
+        return
+      }
+
+      // TODO: Support processId and processName
+      var returnObject = {
+        'processName': 'macOS',
+        'windowTitle': stdout,
+        'processId': 0
+      }
+
+      callback(null, returnObject)
+    })
+  } else {
+    throw new Error("This option isn't available on your OS yet")
+  }
 }
 
 // Helper method to focus a window by name
