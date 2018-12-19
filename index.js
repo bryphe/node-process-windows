@@ -95,7 +95,7 @@ function focusWindowByName(processName) {
 function executeProcess(arg, callback, mapper) {
     callback = callback || noop;
 
-    exec(windowsFocusManagementBinary + " " + arg, (error, stdout, stderr) => {
+    exec('"' + windowsFocusManagementBinary + '" ' + arg, (error, stdout, stderr) => {
         if (error) {
             callback(error, null);
             return;
