@@ -106,7 +106,7 @@ function executeProcess(arg, callback, mapper) {
             return;
         }
 
-        var returnObject = JSON.parse(stdout);
+        var returnObject = JSON.parse(stdout.replace(/[^\x00-\x7F]/g, ""));
 
         if (returnObject.Error) {
             callback(returnObject.Error, null);
