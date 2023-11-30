@@ -90,6 +90,21 @@ function focusWindowByName(processName) {
 }
 
 /**
+ * Helper method to parse JSON without problems
+ * Removing the Unexpected tokens from the string to make the string work.
+ */
+function JSONparse(data, n=0, pp=-1, orig=""){
+  try {
+    return JSON.parse(data);
+  } catch (e) {
+    const pos = Number(e.message.replace(/.*at position /, ''));
+    const newdata = (pp == pos) ? orig.slice(0, pos-1) + orig.slice(pos, orig.length) : data.slice(0, pos) + data.slice(pos+1, data.length);
+    if (n<10) return JSONparse(newdata, n+1, pos, data);
+    else throw e;
+  }
+}
+
+/**
  * Helper method to execute the C# process that wraps the native focus / window APIs
  */
 function executeProcess(arg, callback, mapper) {
@@ -106,7 +121,12 @@ function executeProcess(arg, callback, mapper) {
             return;
         }
 
-        var returnObject = JSON.parse(stdout);
+        var returnObject = {};
+        try {
+            returnObject = JSONparse(stdout.replace(/[^\x00-\x7F]/g, ""));
+        } catch (e) {
+            returnObject.Error = e;
+        }
 
         if (returnObject.Error) {
             callback(returnObject.Error, null);
